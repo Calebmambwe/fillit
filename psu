@@ -1,0 +1,52 @@
+function: threads
+main:
+	t_piece *piecelist
+	
+	:[0]parser(char *)
+		!valid(buf, bytecount)										->
+			charcount(char *)
+			adjacency_counter(char *)
+		makelist(buf, bytecount)
+			makepiece(char *, int)	
+				align(t_piece)
+					shift_x()
+					shift_y()
+
+
+	:[1]solve(piecelisti)
+		map_size 	= :round_up_sq_rt( -> count_pieces(t_piece))
+		map 		= :new_map(map_size)
+		>while 	:!solve_map(map, piecelist, map_size)
+				{
+					>while 	:in_bounds(piece, map_size, 'y')
+						:overlap(map, pieces)
+						place()
+						>solve_map(recurse)
+				}
+			
+			free_map()
+			new_map()
+		:print_map(map, map_size)
+		free_map()
+//----------------------------------------------------------------------
+int		overlap(t_map *map, t_piece *piece)
+{
+	int i;
+	int x;
+	int y;
+
+	i = 0;
+	x = 0;
+	y = 0;
+	x = piece->blockcoords[i] + piece->x_offset;
+	y = piece->blockcoords[i + 1] + piece->y_offset;
+	while (i <= 6 && map->array[y][x] == '.')
+	{
+		i += 2;
+		x = piece->blockcoords[i] + piece->x_offset;
+		y = piece->blockcoords[i + 1] + piece->y_offset;
+	}
+	return (i != 8);
+}
+
+
